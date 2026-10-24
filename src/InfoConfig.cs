@@ -62,15 +62,19 @@ internal sealed class InfoConfig
 
     /// <summary>Brightness of the replay gem; darker than the cost gem so it stays in the background.</summary>
     [JsonPropertyName("replayGemShade")]
-    public float ReplayGemShade { get; set; } = 0.6f;
+    public float ReplayGemShade { get; set; } = 0.7f;
 
     /// <summary>Opacity of the whole replay gem, number included.</summary>
     [JsonPropertyName("replayGemOpacity")]
-    public float ReplayGemOpacity { get; set; } = 0.85f;
+    public float ReplayGemOpacity { get; set; } = 1f;
 
     /// <summary>Centre of the replay gem, relative to the energy gem.</summary>
     [JsonPropertyName("replayGemOffset")]
-    public float[] ReplayGemOffset { get; set; } = { 54, 54 };
+    public float[] ReplayGemOffset { get; set; } = { 66, 10 };
+
+    /// <summary>Centre of the replay gem when the normal-cost gem is showing too.</summary>
+    [JsonPropertyName("replayGemOffsetWithCost")]
+    public float[] ReplayGemOffsetWithCost { get; set; } = { 104, 10 };
 
     /// <summary>Stack card edges behind a card that will be played more than once.</summary>
     [JsonPropertyName("replayStack")]

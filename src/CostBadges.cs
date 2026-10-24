@@ -111,10 +111,15 @@ internal static class CostBadges
                 new GemStyle("%StarIcon", StarGemSize, StarFontSize, config.OriginalStarCostScale,
                     config.OriginalCostGemShade, 1f, config.OriginalStarCostOffset, new Vector2(50, 50)));
 
-            // "R2" is two characters, so its text is a notch smaller than a cost in the same gem.
+            // "R2" is two characters, so its text is a notch smaller than a cost in the same gem. It sits on
+            // the card's top edge beside the real gem, one slot further right when the cost gem is there.
+            // (Below the gem it was covered by the gem's corner and lost on the title banner.)
+            bool costGemShown = entry.EnergyGem is { } costGem && IsAlive(costGem.Gem) && costGem.Gem.Visible;
             UpdateMiniGem(ref entry.ReplayGem, card, config.ReplayGem && replay > 0 ? $"R{replay}" : null, energyOutline,
                 new GemStyle("%EnergyIcon", EnergyGemSize, (int)(EnergyFontSize * 0.85f), config.ReplayGemScale,
-                    config.ReplayGemShade, config.ReplayGemOpacity, config.ReplayGemOffset, new Vector2(54, 54)));
+                    config.ReplayGemShade, config.ReplayGemOpacity,
+                    costGemShown ? config.ReplayGemOffsetWithCost : config.ReplayGemOffset,
+                    costGemShown ? new Vector2(104, 10) : new Vector2(66, 10)));
             UpdateStack(entry, card, model, config.ReplayStack ? Math.Min(replay, Math.Max(0, config.ReplayStackMax)) : 0,
                 Math.Max(0, config.ReplayStackMax), config);
         }

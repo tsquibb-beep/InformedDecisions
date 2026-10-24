@@ -29,13 +29,15 @@
     "originalCostOffset": [60, 6],
     "originalStarCostOffset": [50, 50],
 
-    // "R2" in a small gem by the cost for a card that will be played 2 extra times. It is
-    // smaller, darker and slightly see-through so it stays in the background.
+    // "R2" in a small gem on the card's top edge for a card that will be played 2 extra times.
+    // It is smaller and darker than the cost gem so it stays in the background. It moves to
+    // replayGemOffsetWithCost when the normal-cost gem is showing too, so they sit side by side.
     "replayGem": true,
     "replayGemScale": 0.58,
-    "replayGemShade": 0.6,
-    "replayGemOpacity": 0.85,
-    "replayGemOffset": [54, 54],
+    "replayGemShade": 0.7,
+    "replayGemOpacity": 1.0,
+    "replayGemOffset": [66, 10],
+    "replayGemOffsetWithCost": [104, 10],
 
     // Card edges stacked behind a card that will be played more than once, up to replayStackMax.
     // Where each edge sits relative to the one in front ([right, down], in card units; the card is
