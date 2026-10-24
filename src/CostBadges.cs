@@ -112,14 +112,19 @@ internal static class CostBadges
                     config.OriginalCostGemShade, 1f, config.OriginalStarCostOffset, new Vector2(50, 50)));
 
             // "R2" is two characters, so its text is a notch smaller than a cost in the same gem. It sits on
-            // the card's top edge beside the real gem, one slot further right when the cost gem is there.
-            // (Below the gem it was covered by the gem's corner and lost on the title banner.)
+            // the card's top edge beside the real gem. When the cost gem is there too, it tucks in behind that
+            // one instead, so the three read as one chain. (Below the gem it was covered by the gem's corner
+            // and lost on the title banner; a separate slot further right looked detached.)
             bool costGemShown = entry.EnergyGem is { } costGem && IsAlive(costGem.Gem) && costGem.Gem.Visible;
             UpdateMiniGem(ref entry.ReplayGem, card, config.ReplayGem && replay > 0 ? $"R{replay}" : null, energyOutline,
                 new GemStyle("%EnergyIcon", EnergyGemSize, (int)(EnergyFontSize * 0.85f), config.ReplayGemScale,
                     config.ReplayGemShade, config.ReplayGemOpacity,
                     costGemShown ? config.ReplayGemOffsetWithCost : config.ReplayGemOffset,
-                    costGemShown ? new Vector2(104, 10) : new Vector2(66, 10)));
+                    costGemShown ? new Vector2(84, 8) : new Vector2(66, 10)));
+            if (costGemShown)
+            {
+                DrawBehind(entry.ReplayGem, entry.EnergyGem!);
+            }
             UpdateStack(entry, card, model, config.ReplayStack ? Math.Min(replay, Math.Max(0, config.ReplayStackMax)) : 0,
                 Math.Max(0, config.ReplayStackMax), config);
         }
@@ -172,6 +177,21 @@ internal static class CostBadges
         mini.Label.AddThemeColorOverride("font_outline_color", outline);
         mini.Label.Text = text;
         mini.Gem.Visible = true;
+    }
+
+    /// <summary>Moves <paramref name="back"/> just behind <paramref name="front"/> if it is not already.</summary>
+    private static void DrawBehind(MiniGem? back, MiniGem front)
+    {
+        if (back == null || !IsAlive(back.Gem) || back.Gem.GetParent() != front.Gem.GetParent())
+        {
+            return;
+        }
+
+        int frontIndex = front.Gem.GetIndex();
+        if (back.Gem.GetIndex() > frontIndex)
+        {
+            back.Gem.GetParent().MoveChild(back.Gem, frontIndex);
+        }
     }
 
     private static MiniGem CreateMiniGem(TextureRect gem, GemStyle style)
