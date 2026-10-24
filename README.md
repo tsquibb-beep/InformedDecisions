@@ -1,13 +1,14 @@
 # InformedDecisions
 
-A Slay the Spire 2 mod that puts two pieces of information next to a card's cost.
+A Slay the Spire 2 mod that shows two things on a card that the game makes easy to miss.
 
 - **Normal cost.** When an effect changes a card's cost (Void Form, Corruption, Bullet Time,
-  Enlightenment, Borrowed Time and so on), a smaller number beside the cost shows what the card
-  normally costs. This works for raised and lowered costs, and for the Regent's star costs.
+  Enlightenment, Borrowed Time and so on), a smaller copy of the cost gem behind the cost shows
+  what the card normally costs. This works for raised and lowered costs, and for the Regent's star costs.
   Cost cuts from upgrading a card are not shown.
-- **Replay.** A card that will be played more than once shows `R1`, `R2`... by its cost, for the
-  number of extra plays. This counts Replay on the card (including from enchantments and Hidden
+- **Replay.** A card that will be played more than once has one card edge stacked behind it for
+  each extra play. Past three, `R4`, `R5`... is shown by the cost as well. The config can show
+  `R#` instead of, or as well as, the edges. This counts Replay on the card (including from enchantments and Hidden
   Gem) and extra plays from powers and relics such as Echo Form, Burst and Duplication.
 
 Both show on every card that has a cost: in your hand, in the piles, in the deck view and in

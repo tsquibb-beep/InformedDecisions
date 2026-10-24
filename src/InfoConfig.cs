@@ -14,7 +14,7 @@ namespace InformedDecisions;
 /// these defaults, so the mod never fails to load because of a bad config. `idec reload`
 /// re-reads it.
 ///
-/// Positions are in the cost gem's own units: the energy gem is 64x64, the star gem 58x58,
+/// Gem positions are in the cost gem's own units: the energy gem is 64x64, the star gem 58x58,
 /// (0, 0) is the gem's top-left, and everything scales with the card.
 /// </summary>
 internal sealed class InfoConfig
@@ -34,31 +34,43 @@ internal sealed class InfoConfig
     [JsonPropertyName("replayIncludesPowers")]
     public bool ReplayIncludesPowers { get; set; } = true;
 
-    [JsonPropertyName("originalCostFontSize")]
-    public int OriginalCostFontSize { get; set; } = 20;
+    /// <summary>Size of the small normal-cost gem relative to the real one.</summary>
+    [JsonPropertyName("originalCostScale")]
+    public float OriginalCostScale { get; set; } = 0.62f;
 
-    [JsonPropertyName("originalCostColor")]
-    public string OriginalCostColor { get; set; } = "#FFF6E2";
+    [JsonPropertyName("originalStarCostScale")]
+    public float OriginalStarCostScale { get; set; } = 0.7f;
 
-    [JsonPropertyName("originalCostOutlineColor")]
-    public string OriginalCostOutlineColor { get; set; } = "#2B2118";
+    /// <summary>Brightness of the small gem (1 = same as the real gem). The number is not dimmed.</summary>
+    [JsonPropertyName("originalCostGemShade")]
+    public float OriginalCostGemShade { get; set; } = 0.8f;
 
-    /// <summary>Centre of the original energy cost, relative to the energy gem.</summary>
+    /// <summary>Centre of the small energy gem, relative to the energy gem.</summary>
     [JsonPropertyName("originalCostOffset")]
-    public float[] OriginalCostOffset { get; set; } = { 58, 6 };
+    public float[] OriginalCostOffset { get; set; } = { 60, 6 };
 
-    /// <summary>Centre of the original star cost, relative to the star gem.</summary>
+    /// <summary>Centre of the small star gem, relative to the star gem.</summary>
     [JsonPropertyName("originalStarCostOffset")]
-    public float[] OriginalStarCostOffset { get; set; } = { 52, 8 };
+    public float[] OriginalStarCostOffset { get; set; } = { 50, 50 };
+
+    /// <summary>"stack" (card edges behind the card), "text" ("R2" by the cost) or "both".</summary>
+    [JsonPropertyName("replayStyle")]
+    public string ReplayStyle { get; set; } = "stack";
+
+    /// <summary>Most card edges drawn; past this the "R#" text is shown too.</summary>
+    [JsonPropertyName("replayStackMax")]
+    public int ReplayStackMax { get; set; } = 3;
+
+    /// <summary>How far each card edge sits from the one in front, in card units.</summary>
+    [JsonPropertyName("replayStackOffset")]
+    public float[] ReplayStackOffset { get; set; } = { 7, -9 };
+
+    /// <summary>How much darker each card edge is than the one in front (0 to 0.3).</summary>
+    [JsonPropertyName("replayStackShade")]
+    public float ReplayStackShade { get; set; } = 0.2f;
 
     [JsonPropertyName("replayFontSize")]
     public int ReplayFontSize { get; set; } = 20;
-
-    [JsonPropertyName("replayColor")]
-    public string ReplayColor { get; set; } = "#EFC851";
-
-    [JsonPropertyName("replayOutlineColor")]
-    public string ReplayOutlineColor { get; set; } = "#2B2118";
 
     /// <summary>Centre of the "R#" text, relative to the energy gem.</summary>
     [JsonPropertyName("replayOffset")]
@@ -66,9 +78,6 @@ internal sealed class InfoConfig
 
     public static Vector2 ToVector(float[]? pair, Vector2 fallback) =>
         pair is { Length: >= 2 } ? new Vector2(pair[0], pair[1]) : fallback;
-
-    public static Color ToColor(string? html, Color fallback) =>
-        !string.IsNullOrWhiteSpace(html) && Color.HtmlIsValid(html) ? Color.FromHtml(html) : fallback;
 
     private static InfoConfig? _current;
 

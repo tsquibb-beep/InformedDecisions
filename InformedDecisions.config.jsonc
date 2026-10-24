@@ -4,32 +4,46 @@
 //   %APPDATA%\SlayTheSpire2\InformedDecisions.config.jsonc
 // That copy is read in preference to this one.
 //
-// Positions are [x, y] in the cost gem's own units: the energy gem is 64 x 64 and the star gem
-// 58 x 58, with [0, 0] at the gem's top-left corner. Each number is centred on that point.
-// Colours are hex, like "#EFC851".
+// Gem positions are [x, y] in the cost gem's own units: the energy gem is 64 x 64 and the star
+// gem 58 x 58, with [0, 0] at the gem's top-left corner. Each small gem is centred on that point.
 {
     // Master switch for the whole mod.
     "enabled": true,
 
-    // Show the card's normal cost next to its cost when an effect has changed it
+    // Show the card's normal cost in a small gem behind its cost when an effect has changed it
     // (Void Form, Corruption, Bullet Time...). Cost cuts from upgrades are not shown.
     "showOriginalCost": true,
 
-    // Show "R2" by the cost of a card that will be played 2 extra times.
+    // Show cards that will be played more than once (Replay).
     "showReplay": true,
 
     // Also count extra plays from powers and relics (Echo Form, Burst, Duplication...),
     // not only Replay on the card itself.
     "replayIncludesPowers": true,
 
-    "originalCostFontSize": 20,
-    "originalCostColor": "#FFF6E2",
-    "originalCostOutlineColor": "#2B2118",
-    "originalCostOffset": [58, 6],
-    "originalStarCostOffset": [52, 8],
+    // Size of the small gems compared with the real ones, and how bright the small gem is
+    // (1 = as bright as the real gem; the number itself is never dimmed).
+    "originalCostScale": 0.62,
+    "originalStarCostScale": 0.7,
+    "originalCostGemShade": 0.8,
+    "originalCostOffset": [60, 6],
+    "originalStarCostOffset": [50, 50],
 
+    // How extra plays are shown:
+    //   "stack" - one card edge behind the card per extra play
+    //   "text"  - "R2" by the cost
+    //   "both"
+    "replayStyle": "stack",
+
+    // Most card edges drawn. With more extra plays than this, "R#" is shown as well.
+    "replayStackMax": 3,
+
+    // Where each card edge sits relative to the one in front ([right, down], in card units; the
+    // card is 300 x 422), and how much darker each one is (0 to 0.3).
+    "replayStackOffset": [7, -9],
+    "replayStackShade": 0.2,
+
+    // The "R#" text: size, and its centre relative to the energy gem.
     "replayFontSize": 20,
-    "replayColor": "#EFC851",
-    "replayOutlineColor": "#2B2118",
     "replayOffset": [62, 40]
 }
