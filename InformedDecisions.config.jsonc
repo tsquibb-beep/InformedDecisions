@@ -4,7 +4,7 @@
 //   %APPDATA%\SlayTheSpire2\InformedDecisions.config.jsonc
 // That copy is read in preference to this one.
 //
-// Gem positions are [x, y] in the cost gem's own units: the energy gem is 64 x 64 and the star
+// Gem positions are [x, y] in the game's gem's own units: the energy gem is 64 x 64 and the star
 // gem 58 x 58, with [0, 0] at the gem's top-left corner. Each small gem is centred on that point.
 {
     // Master switch for the whole mod.
@@ -29,21 +29,19 @@
     "originalCostOffset": [60, 6],
     "originalStarCostOffset": [50, 50],
 
-    // How extra plays are shown:
-    //   "stack" - one card edge behind the card per extra play
-    //   "text"  - "R2" by the cost
-    //   "both"
-    "replayStyle": "stack",
+    // "R2" in a small gem by the cost for a card that will be played 2 extra times. It is
+    // smaller, darker and slightly see-through so it stays in the background.
+    "replayGem": true,
+    "replayGemScale": 0.58,
+    "replayGemShade": 0.6,
+    "replayGemOpacity": 0.85,
+    "replayGemOffset": [54, 54],
 
-    // Most card edges drawn. With more extra plays than this, "R#" is shown as well.
-    "replayStackMax": 3,
-
-    // Where each card edge sits relative to the one in front ([right, down], in card units; the
-    // card is 300 x 422), and how much darker each one is (0 to 0.3).
+    // Card edges stacked behind a card that will be played more than once, up to replayStackMax.
+    // Where each edge sits relative to the one in front ([right, down], in card units; the card is
+    // 300 x 422), and how much darker each one is (0 to 0.3).
+    "replayStack": true,
+    "replayStackMax": 2,
     "replayStackOffset": [7, -9],
-    "replayStackShade": 0.2,
-
-    // The "R#" text: size, and its centre relative to the energy gem.
-    "replayFontSize": 20,
-    "replayOffset": [62, 40]
+    "replayStackShade": 0.2
 }

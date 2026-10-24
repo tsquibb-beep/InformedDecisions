@@ -15,9 +15,9 @@ namespace InformedDecisions;
 ///
 /// * **Normal cost:** a smaller copy of the card's cost gem (same texture, font, outline and
 ///   shadow as the game's), tucked behind the real gem.
-/// * **Extra plays:** darkened copies of the card's own frame stacked behind it, one per extra
-///   play, so a Replay card looks like a small pile of cards. Past <c>replayStackMax</c> (or with
-///   <c>replayStyle</c> "text"/"both") an "R#" label appears by the gem as well.
+/// * **Extra plays:** "R2" in a third, dimmer mini gem, plus darkened copies of the card's own
+///   frame stacked behind it (at most <c>replayStackMax</c>, as a signal rather than a count), so
+///   a Replay card looks like a small pile of cards.
 ///
 /// Everything is a child of %CardContainer, inserted at a fixed draw-order slot: the mini gems
 /// just behind the real gems, the stack just in front of the card's glow (%Highlight) so the
@@ -32,11 +32,15 @@ internal static class CostBadges
         public required Label Label;
     }
 
+    /// <summary>How one kind of mini gem looks and where it goes, relative to the game's gem.</summary>
+    private readonly record struct GemStyle(string GemPath, float GemSize, int FontSize, float Scale, float Shade,
+        float Opacity, float[]? Offset, Vector2 FallbackOffset);
+
     private sealed class Entry
     {
         public MiniGem? EnergyGem;
         public MiniGem? StarGem;
-        public Label? ReplayText;
+        public MiniGem? ReplayGem;
         public readonly List<TextureRect> Stack = new();
         public int StyledFor = -1;
     }
@@ -99,11 +103,20 @@ internal static class CostBadges
                 entry.StyledFor = _styleGeneration;
             }
 
-            UpdateMiniGem(ref entry.EnergyGem, card, "%EnergyIcon", energyCost, EnergyGemSize, EnergyFontSize,
-                config.OriginalCostScale, config.OriginalCostOffset, new Vector2(60, 6), model!.Pool.EnergyOutlineColor, config);
-            UpdateMiniGem(ref entry.StarGem, card, "%StarIcon", starCost, StarGemSize, StarFontSize,
-                config.OriginalStarCostScale, config.OriginalStarCostOffset, new Vector2(50, 50), StsColors.defaultStarCostOutline, config);
-            UpdateReplay(entry, card, model, replay, config);
+            Color energyOutline = model!.Pool.EnergyOutlineColor;
+            UpdateMiniGem(ref entry.EnergyGem, card, energyCost?.ToString(), energyOutline,
+                new GemStyle("%EnergyIcon", EnergyGemSize, EnergyFontSize, config.OriginalCostScale,
+                    config.OriginalCostGemShade, 1f, config.OriginalCostOffset, new Vector2(60, 6)));
+            UpdateMiniGem(ref entry.StarGem, card, starCost?.ToString(), StsColors.defaultStarCostOutline,
+                new GemStyle("%StarIcon", StarGemSize, StarFontSize, config.OriginalStarCostScale,
+                    config.OriginalCostGemShade, 1f, config.OriginalStarCostOffset, new Vector2(50, 50)));
+
+            // "R2" is two characters, so its text is a notch smaller than a cost in the same gem.
+            UpdateMiniGem(ref entry.ReplayGem, card, config.ReplayGem && replay > 0 ? $"R{replay}" : null, energyOutline,
+                new GemStyle("%EnergyIcon", EnergyGemSize, (int)(EnergyFontSize * 0.85f), config.ReplayGemScale,
+                    config.ReplayGemShade, config.ReplayGemOpacity, config.ReplayGemOffset, new Vector2(54, 54)));
+            UpdateStack(entry, card, model, config.ReplayStack ? Math.Min(replay, Math.Max(0, config.ReplayStackMax)) : 0,
+                Math.Max(0, config.ReplayStackMax), config);
         }
         catch (Exception ex)
         {
@@ -124,15 +137,14 @@ internal static class CostBadges
         }
     }
 
-    // ---- Normal cost: mini gem ---------------------------------------------------------------
+    // ---- Mini gems: normal cost and replay count -----------------------------------------------
 
-    private static void UpdateMiniGem(ref MiniGem? mini, NCard card, string gemPath, int? cost, float gemSize,
-        int fontSize, float scale, float[]? offset, Vector2 fallbackOffset, Color outline, InfoConfig config)
+    private static void UpdateMiniGem(ref MiniGem? mini, NCard card, string? text, Color outline, GemStyle style)
     {
-        TextureRect? gem = card.GetNodeOrNull<TextureRect>(gemPath);
+        TextureRect? gem = card.GetNodeOrNull<TextureRect>(style.GemPath);
 
         // The game hides its gem on cards without that kind of cost; ours goes with it.
-        if (cost == null || gem == null || !gem.Visible)
+        if (text == null || gem == null || !gem.Visible)
         {
             if (mini != null && IsAlive(mini.Gem))
             {
@@ -144,39 +156,41 @@ internal static class CostBadges
 
         if (mini == null || !IsAlive(mini.Gem))
         {
-            mini = CreateMiniGem(card, gem, gemSize, fontSize, scale, offset, fallbackOffset, config);
+            mini = CreateMiniGem(gem, style);
         }
 
         // Kept current on every refresh: the texture is per character and the gem can move.
         mini.Gem.Texture = gem.Texture;
-        float size = gemSize * scale;
-        Vector2 centre = InfoConfig.ToVector(offset, fallbackOffset);
+        float size = style.GemSize * style.Scale;
+        Vector2 centre = InfoConfig.ToVector(style.Offset, style.FallbackOffset);
         mini.Gem.Position = gem.Position + centre - new Vector2(size, size) / 2;
         mini.Label.AddThemeColorOverride("font_outline_color", outline);
-        mini.Label.Text = cost.Value.ToString();
+        mini.Label.Text = text;
         mini.Gem.Visible = true;
     }
 
-    private static MiniGem CreateMiniGem(NCard card, TextureRect gem, float gemSize, int fontSize, float scale,
-        float[]? offset, Vector2 fallbackOffset, InfoConfig config)
+    private static MiniGem CreateMiniGem(TextureRect gem, GemStyle style)
     {
-        float size = gemSize * scale;
-        float shade = Math.Clamp(config.OriginalCostGemShade, 0f, 1f);
+        float scale = style.Scale;
+        float size = style.GemSize * scale;
+        float shade = Math.Clamp(style.Shade, 0f, 1f);
         var rect = new TextureRect
         {
-            Name = $"InformedDecisionsMini{gem.Name}",
+            Name = "InformedDecisionsMiniGem",
             MouseFilter = Control.MouseFilterEnum.Ignore,
             ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
             StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
             Size = new Vector2(size, size),
             // Only the gem is shaded, so it reads as secondary; the number stays full brightness.
             SelfModulate = new Color(shade, shade, shade),
+            // Fades gem and number together.
+            Modulate = new Color(1, 1, 1, Math.Clamp(style.Opacity, 0f, 1f)),
             Visible = false,
         };
 
         // The game's cost label style, scaled: Kreon bold, cream, outline, soft drop shadow.
-        int scaledFont = Math.Max(12, (int)MathF.Round(fontSize * scale));
-        int outlineSize = Math.Max(4, (int)MathF.Round(fontSize / 2f * scale));
+        int scaledFont = Math.Max(12, (int)MathF.Round(style.FontSize * scale));
+        int outlineSize = Math.Max(4, (int)MathF.Round(style.FontSize / 2f * scale));
         var label = new Label
         {
             MouseFilter = Control.MouseFilterEnum.Ignore,
@@ -208,18 +222,6 @@ internal static class CostBadges
     }
 
     // ---- Extra plays: stacked frames ----------------------------------------------------------
-
-    private static void UpdateReplay(Entry entry, NCard card, CardModel model, int replay, InfoConfig config)
-    {
-        string style = (config.ReplayStyle ?? "stack").Trim().ToLowerInvariant();
-        bool stack = style is "stack" or "both";
-        int max = Math.Max(0, config.ReplayStackMax);
-        int layers = stack ? Math.Min(replay, max) : 0;
-        bool text = replay > 0 && (style is "text" or "both" || replay > layers);
-
-        UpdateStack(entry, card, model, layers, max, config);
-        UpdateReplayText(entry, card, text ? $"R{replay}" : null, config);
-    }
 
     private static void UpdateStack(Entry entry, NCard card, CardModel model, int layers, int max, InfoConfig config)
     {
@@ -301,68 +303,13 @@ internal static class CostBadges
         }
     }
 
-    private static void UpdateReplayText(Entry entry, NCard card, string? text, InfoConfig config)
-    {
-        if (text == null)
-        {
-            if (IsAlive(entry.ReplayText)) entry.ReplayText!.Visible = false;
-            return;
-        }
-
-        if (!IsAlive(entry.ReplayText))
-        {
-            TextureRect? gem = card.GetNodeOrNull<TextureRect>("%EnergyIcon");
-            if (gem == null)
-            {
-                return;
-            }
-
-            entry.ReplayText = CreateReplayText(gem, config);
-        }
-
-        entry.ReplayText!.Text = text;
-        entry.ReplayText.Visible = true;
-    }
-
-    private static Label CreateReplayText(TextureRect gem, InfoConfig config)
-    {
-        int fontSize = config.ReplayFontSize;
-        var label = new Label
-        {
-            Name = "InformedDecisionsReplayText",
-            MouseFilter = Control.MouseFilterEnum.Ignore,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            VerticalAlignment = VerticalAlignment.Center,
-            Visible = false,
-        };
-        if (gem.GetChildOrNull<Label>(0) is { } gameLabel)
-        {
-            label.AddThemeFontOverride("font", gameLabel.GetThemeFont("font"));
-        }
-
-        label.AddThemeFontSizeOverride("font_size", fontSize);
-        label.AddThemeColorOverride("font_color", StsColors.gold);
-        label.AddThemeColorOverride("font_outline_color", new Color("2B2118"));
-        label.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.188235f));
-        label.AddThemeConstantOverride("outline_size", Math.Max(4, fontSize / 2));
-        label.AddThemeConstantOverride("shadow_outline_size", Math.Max(4, fontSize / 2));
-        label.AddThemeConstantOverride("shadow_offset_x", 2);
-        label.AddThemeConstantOverride("shadow_offset_y", 2);
-
-        var size = new Vector2(fontSize * 4, fontSize * 2);
-        label.Size = size;
-        label.Position = InfoConfig.ToVector(config.ReplayOffset, new Vector2(62, 40)) - size / 2;
-        gem.AddChild(label);
-        return label;
-    }
-
     // ---- Housekeeping ---------------------------------------------------------------------------
 
     private static void Hide(Entry entry)
     {
         if (entry.EnergyGem != null && IsAlive(entry.EnergyGem.Gem)) entry.EnergyGem.Gem.Visible = false;
         if (entry.StarGem != null && IsAlive(entry.StarGem.Gem)) entry.StarGem.Gem.Visible = false;
-        if (IsAlive(entry.ReplayText)) entry.ReplayText!.Visible = false;
+        if (entry.ReplayGem != null && IsAlive(entry.ReplayGem.Gem)) entry.ReplayGem.Gem.Visible = false;
         foreach (TextureRect layer in entry.Stack)
         {
             if (IsAlive(layer)) layer.Visible = false;
@@ -373,7 +320,7 @@ internal static class CostBadges
     {
         if (entry.EnergyGem != null && IsAlive(entry.EnergyGem.Gem)) entry.EnergyGem.Gem.QueueFree();
         if (entry.StarGem != null && IsAlive(entry.StarGem.Gem)) entry.StarGem.Gem.QueueFree();
-        if (IsAlive(entry.ReplayText)) entry.ReplayText!.QueueFree();
+        if (entry.ReplayGem != null && IsAlive(entry.ReplayGem.Gem)) entry.ReplayGem.Gem.QueueFree();
         foreach (TextureRect layer in entry.Stack)
         {
             if (IsAlive(layer)) layer.QueueFree();
@@ -381,7 +328,7 @@ internal static class CostBadges
 
         entry.EnergyGem = null;
         entry.StarGem = null;
-        entry.ReplayText = null;
+        entry.ReplayGem = null;
         entry.Stack.Clear();
     }
 

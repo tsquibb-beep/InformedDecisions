@@ -6,10 +6,10 @@ A Slay the Spire 2 mod that shows two things on a card that the game makes easy 
   Enlightenment, Borrowed Time and so on), a smaller copy of the cost gem behind the cost shows
   what the card normally costs. This works for raised and lowered costs, and for the Regent's star costs.
   Cost cuts from upgrading a card are not shown.
-- **Replay.** A card that will be played more than once has one card edge stacked behind it for
-  each extra play. Past three, `R4`, `R5`... is shown by the cost as well. The config can show
-  `R#` instead of, or as well as, the edges. This counts Replay on the card (including from enchantments and Hidden
-  Gem) and extra plays from powers and relics such as Echo Form, Burst and Duplication.
+- **Replay.** A card that will be played more than once shows `R1`, `R2`... in a second, dimmer
+  small gem by the cost, and has card edges stacked behind it (up to two). This counts Replay on
+  the card (including from enchantments and Hidden Gem) and extra plays from powers and relics
+  such as Echo Form, Burst and Duplication.
 
 Both show on every card that has a cost: in your hand, in the piles, in the deck view and in
 rewards. The mod only changes what is drawn on the card, so it is safe in co-op.

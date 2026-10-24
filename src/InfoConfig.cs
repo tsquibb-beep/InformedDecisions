@@ -53,13 +53,32 @@ internal sealed class InfoConfig
     [JsonPropertyName("originalStarCostOffset")]
     public float[] OriginalStarCostOffset { get; set; } = { 50, 50 };
 
-    /// <summary>"stack" (card edges behind the card), "text" ("R2" by the cost) or "both".</summary>
-    [JsonPropertyName("replayStyle")]
-    public string ReplayStyle { get; set; } = "stack";
+    /// <summary>Show "R2" in a small gem by the cost.</summary>
+    [JsonPropertyName("replayGem")]
+    public bool ReplayGem { get; set; } = true;
 
-    /// <summary>Most card edges drawn; past this the "R#" text is shown too.</summary>
+    [JsonPropertyName("replayGemScale")]
+    public float ReplayGemScale { get; set; } = 0.58f;
+
+    /// <summary>Brightness of the replay gem; darker than the cost gem so it stays in the background.</summary>
+    [JsonPropertyName("replayGemShade")]
+    public float ReplayGemShade { get; set; } = 0.6f;
+
+    /// <summary>Opacity of the whole replay gem, number included.</summary>
+    [JsonPropertyName("replayGemOpacity")]
+    public float ReplayGemOpacity { get; set; } = 0.85f;
+
+    /// <summary>Centre of the replay gem, relative to the energy gem.</summary>
+    [JsonPropertyName("replayGemOffset")]
+    public float[] ReplayGemOffset { get; set; } = { 54, 54 };
+
+    /// <summary>Stack card edges behind a card that will be played more than once.</summary>
+    [JsonPropertyName("replayStack")]
+    public bool ReplayStack { get; set; } = true;
+
+    /// <summary>Most card edges drawn. They signal "replays"; the gem gives the number.</summary>
     [JsonPropertyName("replayStackMax")]
-    public int ReplayStackMax { get; set; } = 3;
+    public int ReplayStackMax { get; set; } = 2;
 
     /// <summary>How far each card edge sits from the one in front, in card units.</summary>
     [JsonPropertyName("replayStackOffset")]
@@ -68,13 +87,6 @@ internal sealed class InfoConfig
     /// <summary>How much darker each card edge is than the one in front (0 to 0.3).</summary>
     [JsonPropertyName("replayStackShade")]
     public float ReplayStackShade { get; set; } = 0.2f;
-
-    [JsonPropertyName("replayFontSize")]
-    public int ReplayFontSize { get; set; } = 20;
-
-    /// <summary>Centre of the "R#" text, relative to the energy gem.</summary>
-    [JsonPropertyName("replayOffset")]
-    public float[] ReplayOffset { get; set; } = { 62, 40 };
 
     public static Vector2 ToVector(float[]? pair, Vector2 fallback) =>
         pair is { Length: >= 2 } ? new Vector2(pair[0], pair[1]) : fallback;
