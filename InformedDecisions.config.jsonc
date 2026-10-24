@@ -1,0 +1,35 @@
+// InformedDecisions — settings. Reload in game with the dev console: idec reload
+//
+// Copy this file to your save folder to keep your settings through mod updates:
+//   %APPDATA%\SlayTheSpire2\InformedDecisions.config.jsonc
+// That copy is read in preference to this one.
+//
+// Positions are [x, y] in the cost gem's own units: the energy gem is 64 x 64 and the star gem
+// 58 x 58, with [0, 0] at the gem's top-left corner. Each number is centred on that point.
+// Colours are hex, like "#EFC851".
+{
+    // Master switch for the whole mod.
+    "enabled": true,
+
+    // Show the card's normal cost next to its cost when an effect has changed it
+    // (Void Form, Corruption, Bullet Time...). Cost cuts from upgrades are not shown.
+    "showOriginalCost": true,
+
+    // Show "R2" by the cost of a card that will be played 2 extra times.
+    "showReplay": true,
+
+    // Also count extra plays from powers and relics (Echo Form, Burst, Duplication...),
+    // not only Replay on the card itself.
+    "replayIncludesPowers": true,
+
+    "originalCostFontSize": 20,
+    "originalCostColor": "#FFF6E2",
+    "originalCostOutlineColor": "#2B2118",
+    "originalCostOffset": [58, 6],
+    "originalStarCostOffset": [52, 8],
+
+    "replayFontSize": 20,
+    "replayColor": "#EFC851",
+    "replayOutlineColor": "#2B2118",
+    "replayOffset": [62, 40]
+}

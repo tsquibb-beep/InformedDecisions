@@ -1,0 +1,31 @@
+# InformedDecisions
+
+A Slay the Spire 2 mod that puts two pieces of information next to a card's cost.
+
+- **Normal cost.** When an effect changes a card's cost (Void Form, Corruption, Bullet Time,
+  Enlightenment, Borrowed Time and so on), a smaller number beside the cost shows what the card
+  normally costs. This works for raised and lowered costs, and for the Regent's star costs.
+  Cost cuts from upgrading a card are not shown.
+- **Replay.** A card that will be played more than once shows `R1`, `R2`... by its cost, for the
+  number of extra plays. This counts Replay on the card (including from enchantments and Hidden
+  Gem) and extra plays from powers and relics such as Echo Form, Burst and Duplication.
+
+Both show on every card that has a cost: in your hand, in the piles, in the deck view and in
+rewards. The mod only changes what is drawn on the card, so it is safe in co-op.
+
+## Install
+
+Copy the `InformedDecisions` folder into `Slay the Spire 2/mods/`, or install with Vortex.
+
+## Settings
+
+`InformedDecisions.config.jsonc` in the mod folder turns each part on or off and sets the sizes,
+colours and positions. To keep your settings through updates, copy it to
+`%APPDATA%\SlayTheSpire2\`; that copy is used first.
+
+With the dev console open (any mod enables it), `idec reload` applies changes to the config
+without restarting, and `idec diag` lists the values for each card in your hand.
+
+## Licence
+
+MIT
