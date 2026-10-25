@@ -45,7 +45,7 @@
     // Switch it in game with the dev console: idec effect ripple (or glow, compare, none).
     // All animated gems move in time together. Period is in seconds; strength runs from 0 to 2.
     // replayEffectColor is [r, g, b] from 0 to 1, e.g. [1, 0.85, 0.4] for gold; null uses the gem's colour.
-    "replayEffect": "compare",
+    "replayEffect": "ripple",
     "replayEffectInHandOnly": true,
     "replayRipplePeriod": 2.4,
     "replayRippleStrength": 0.9,

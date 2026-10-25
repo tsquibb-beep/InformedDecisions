@@ -78,7 +78,7 @@ internal sealed class InfoConfig
 
     /// <summary>Motion on the replay gem: "ripple", "glow", "compare" (alternates the two along the hand) or "none".</summary>
     [JsonPropertyName("replayEffect")]
-    public string ReplayEffect { get; set; } = ReplayEffects.Compare;
+    public string ReplayEffect { get; set; } = ReplayEffects.Ripple;
 
     /// <summary>Only animate replay gems in your hand; the deck view and rewards stay still.</summary>
     [JsonPropertyName("replayEffectInHandOnly")]
