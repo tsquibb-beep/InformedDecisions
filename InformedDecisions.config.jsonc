@@ -39,6 +39,20 @@
     "replayGemOffset": [66, 10],
     "replayGemOffsetWithCost": [74, 34],
 
+    // Motion on the replay gem, so it catches the eye. "ripple": every few seconds a copy of the gem
+    // grows out from behind it and fades. "glow": a soft halo behind it slowly brightens and dims.
+    // "compare" alternates the two along your hand, to see them side by side. "none" keeps it still.
+    // Switch it in game with the dev console: idec effect ripple (or glow, compare, none).
+    // All animated gems move in time together. Period is in seconds; strength runs from 0 to 2.
+    // replayEffectColor is [r, g, b] from 0 to 1, e.g. [1, 0.85, 0.4] for gold; null uses the gem's colour.
+    "replayEffect": "compare",
+    "replayEffectInHandOnly": true,
+    "replayRipplePeriod": 2.4,
+    "replayRippleStrength": 0.9,
+    "replayGlowPeriod": 2.4,
+    "replayGlowStrength": 0.8,
+    "replayEffectColor": null,
+
     // Card edges stacked behind a card that will be played more than once, up to replayStackMax. Off by default.
     // Where each edge sits relative to the one in front ([right, down], in card units; the card is
     // 300 x 422), and how much darker each one is (0 to 0.3).

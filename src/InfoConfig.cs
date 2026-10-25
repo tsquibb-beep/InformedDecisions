@@ -76,6 +76,34 @@ internal sealed class InfoConfig
     [JsonPropertyName("replayGemOffsetWithCost")]
     public float[] ReplayGemOffsetWithCost { get; set; } = { 74, 34 };
 
+    /// <summary>Motion on the replay gem: "ripple", "glow", "compare" (alternates the two along the hand) or "none".</summary>
+    [JsonPropertyName("replayEffect")]
+    public string ReplayEffect { get; set; } = ReplayEffects.Compare;
+
+    /// <summary>Only animate replay gems in your hand; the deck view and rewards stay still.</summary>
+    [JsonPropertyName("replayEffectInHandOnly")]
+    public bool ReplayEffectInHandOnly { get; set; } = true;
+
+    /// <summary>Seconds from one ripple to the next.</summary>
+    [JsonPropertyName("replayRipplePeriod")]
+    public float ReplayRipplePeriod { get; set; } = 2.4f;
+
+    /// <summary>How visible the ripple is (0 to 2).</summary>
+    [JsonPropertyName("replayRippleStrength")]
+    public float ReplayRippleStrength { get; set; } = 0.9f;
+
+    /// <summary>Seconds for one full glow pulse.</summary>
+    [JsonPropertyName("replayGlowPeriod")]
+    public float ReplayGlowPeriod { get; set; } = 2.4f;
+
+    /// <summary>How bright the glow is at its peak (0 to 2).</summary>
+    [JsonPropertyName("replayGlowStrength")]
+    public float ReplayGlowStrength { get; set; } = 0.8f;
+
+    /// <summary>[r, g, b] from 0 to 1 for the effect; unset uses the gem's own colour.</summary>
+    [JsonPropertyName("replayEffectColor")]
+    public float[]? ReplayEffectColor { get; set; }
+
     /// <summary>Stack card edges behind a card that will be played more than once.</summary>
     [JsonPropertyName("replayStack")]
     public bool ReplayStack { get; set; } = false;

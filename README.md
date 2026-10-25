@@ -7,7 +7,8 @@ A Slay the Spire 2 mod that shows two things on a card that the game makes easy 
   what the card normally costs. This works for raised and lowered costs, and for the Regent's star costs.
   Cost cuts from upgrading a card are not shown.
 - **Replay.** A card that will be played more than once shows `R1`, `R2`... in a second, dimmer
-  small gem by the cost. A setting can also stack card edges behind it (up to two). This counts Replay on
+  small gem by the cost, which can ripple or glow gently while the card is in your hand. A setting
+  can also stack card edges behind it (up to two). This counts Replay on
   the card (including from enchantments and Hidden Gem) and extra plays from powers and relics
   such as Echo Form, Burst and Duplication.
 
@@ -25,7 +26,8 @@ colours and positions. To keep your settings through updates, copy it to
 `%APPDATA%\SlayTheSpire2\`; that copy is used first.
 
 With the dev console open (any mod enables it), `idec reload` applies changes to the config
-without restarting, and `idec diag` lists the values for each card in your hand.
+without restarting, `idec effect ripple` (or `glow`, `compare`, `none`) switches the replay gem's
+animation, and `idec diag` lists the values for each card in your hand.
 
 ## Licence
 

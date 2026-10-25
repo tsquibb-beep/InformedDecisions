@@ -22,7 +22,7 @@ public class InfoConsoleCmd : AbstractConsoleCmd
 {
     public override string CmdName => "idec";
 
-    public override string Args => "[diag|reload]";
+    public override string Args => "[diag|reload|effect <ripple|glow|compare|none>]";
 
     public override string Description => "InformedDecisions: show the hand's cost/replay values, or reload the config.";
 
@@ -38,19 +38,35 @@ public class InfoConsoleCmd : AbstractConsoleCmd
 
             case "reload":
                 InfoConfig.Reload();
-                CostBadges.Restyle();
-                if (NPlayerHand.Instance is { } hand)
-                {
-                    foreach (var holder in hand.ActiveHolders)
-                    {
-                        holder.UpdateCard();
-                    }
-                }
-
+                Redraw();
                 return new CmdResult(success: true, "Config reloaded.");
 
+            case "effect":
+                string? kind = args.Skip(1).FirstOrDefault()?.ToLowerInvariant();
+                if (kind is not (ReplayEffects.Ripple or ReplayEffects.Glow or ReplayEffects.Compare or ReplayEffects.None))
+                {
+                    return new CmdResult(success: false, "Use: idec effect ripple, glow, compare or none.");
+                }
+
+                // Until the next reload or restart; the config file is not changed.
+                InfoConfig.Current.ReplayEffect = kind;
+                Redraw();
+                return new CmdResult(success: true, $"Replay gem effect: {kind}.");
+
             default:
-                return new CmdResult(success: false, "Use: idec diag, idec reload.");
+                return new CmdResult(success: false, "Use: idec diag, idec reload, idec effect <name>.");
+        }
+    }
+
+    private static void Redraw()
+    {
+        CostBadges.Restyle();
+        if (NPlayerHand.Instance is { } hand)
+        {
+            foreach (var holder in hand.ActiveHolders)
+            {
+                holder.UpdateCard();
+            }
         }
     }
 
@@ -104,7 +120,13 @@ public class InfoConsoleCmd : AbstractConsoleCmd
     {
         if (args.Length <= 1)
         {
-            return CompleteArgument(new[] { "diag", "reload" }, Array.Empty<string>(), args.FirstOrDefault() ?? "");
+            return CompleteArgument(new[] { "diag", "reload", "effect" }, Array.Empty<string>(), args.FirstOrDefault() ?? "");
+        }
+
+        if (args.Length == 2 && args[0].Equals("effect", StringComparison.OrdinalIgnoreCase))
+        {
+            return CompleteArgument(new[] { ReplayEffects.Ripple, ReplayEffects.Glow, ReplayEffects.Compare, ReplayEffects.None },
+                Array.Empty<string>(), args[1]);
         }
 
         return new CompletionResult { Type = CompletionType.Argument, ArgumentContext = CmdName };

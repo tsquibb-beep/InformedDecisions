@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Cards;
+using MegaCrit.Sts2.Core.Nodes.Cards.Holders;
 
 namespace InformedDecisions;
 
@@ -15,9 +16,9 @@ namespace InformedDecisions;
 ///
 /// * **Normal cost:** a smaller copy of the card's cost gem (same texture, font, outline and
 ///   shadow as the game's), tucked behind the real gem.
-/// * **Extra plays:** "R2" in a third, dimmer mini gem, plus darkened copies of the card's own
-///   frame stacked behind it (at most <c>replayStackMax</c>, as a signal rather than a count), so
-///   a Replay card looks like a small pile of cards.
+/// * **Extra plays:** "R2" in a third, dimmer mini gem, optionally animated (<see cref="ReplayEffects"/>),
+///   and optionally darkened copies of the card's own frame stacked behind it (at most
+///   <c>replayStackMax</c>, as a signal rather than a count), so a Replay card looks like a small pile of cards.
 ///
 /// Everything is a child of %CardContainer, inserted at a fixed draw-order slot: the mini gems
 /// just behind the real gems, the stack just in front of the card's glow (%Highlight) so the
@@ -30,6 +31,8 @@ internal static class CostBadges
     {
         public required TextureRect Gem;
         public required Label Label;
+        public TextureRect? Effect;
+        public string? EffectKind;
     }
 
     /// <summary>How one kind of mini gem looks and where it goes, relative to the game's gem.</summary>
@@ -125,6 +128,15 @@ internal static class CostBadges
             {
                 DrawBehind(entry.ReplayGem, entry.EnergyGem!);
             }
+
+            if (entry.ReplayGem is { } replayGem && IsAlive(replayGem.Gem) && replayGem.Gem.Visible)
+            {
+                NHandCardHolder? holder = HandHolder(card);
+                string kind = holder == null && config.ReplayEffectInHandOnly
+                    ? ReplayEffects.None
+                    : ReplayEffects.Resolve(config.ReplayEffect, holder?.GetIndex() ?? 0);
+                ReplayEffects.Update(ref replayGem.Effect, ref replayGem.EffectKind, replayGem.Gem, kind, config);
+            }
             UpdateStack(entry, card, model, config.ReplayStack ? Math.Min(replay, Math.Max(0, config.ReplayStackMax)) : 0,
                 Math.Max(0, config.ReplayStackMax), config);
         }
@@ -177,6 +189,18 @@ internal static class CostBadges
         mini.Label.AddThemeColorOverride("font_outline_color", outline);
         mini.Label.Text = text;
         mini.Gem.Visible = true;
+    }
+
+    /// <summary>The hand slot holding this card, or null when it is anywhere else (deck view, rewards...).</summary>
+    private static NHandCardHolder? HandHolder(NCard card)
+    {
+        Node? node = card.GetParent();
+        for (int i = 0; i < 3 && node != null; i++, node = node.GetParent())
+        {
+            if (node is NHandCardHolder holder) return holder;
+        }
+
+        return null;
     }
 
     /// <summary>Moves <paramref name="back"/> just behind <paramref name="front"/> if it is not already.</summary>
