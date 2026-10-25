@@ -68,6 +68,10 @@ internal sealed class InfoConfig
     [JsonPropertyName("replayGemOpacity")]
     public float ReplayGemOpacity { get; set; } = 1f;
 
+    /// <summary>"arrows": the count inside two arching arrows (the usual repeat icon). "R": "R2".</summary>
+    [JsonPropertyName("replaySymbol")]
+    public string ReplaySymbol { get; set; } = "arrows";
+
     /// <summary>Centre of the replay gem, relative to the energy gem.</summary>
     [JsonPropertyName("replayGemOffset")]
     public float[] ReplayGemOffset { get; set; } = { 66, 10 };

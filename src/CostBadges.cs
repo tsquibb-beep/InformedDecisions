@@ -16,7 +16,7 @@ namespace InformedDecisions;
 ///
 /// * **Normal cost:** a smaller copy of the card's cost gem (same texture, font, outline and
 ///   shadow as the game's), tucked behind the real gem.
-/// * **Extra plays:** "R2" in a third, dimmer mini gem, optionally animated (<see cref="ReplayEffects"/>),
+/// * **Extra plays:** the count inside two arching arrows (<see cref="ReplayArrows"/>), or "R2", in a third, dimmer mini gem, optionally animated (<see cref="ReplayEffects"/>),
 ///   and optionally darkened copies of the card's own frame stacked behind it (at most
 ///   <c>replayStackMax</c>, as a signal rather than a count), so a Replay card looks like a small pile of cards.
 ///
@@ -33,6 +33,7 @@ internal static class CostBadges
         public required Label Label;
         public TextureRect? Effect;
         public string? EffectKind;
+        public ColorRect? Arrows;
     }
 
     /// <summary>How one kind of mini gem looks and where it goes, relative to the game's gem.</summary>
@@ -114,12 +115,15 @@ internal static class CostBadges
                 new GemStyle("%StarIcon", StarGemSize, StarFontSize, config.OriginalStarCostScale,
                     config.OriginalCostGemShade, 1f, config.OriginalStarCostOffset, new Vector2(50, 50)));
 
-            // "R2" is two characters, so its text is a notch smaller than a cost in the same gem. On its own it
+            // The count sits inside two arching arrows, or reads "R2". Either way the text is a notch smaller than
+            // a cost in the same gem: "R2" is two characters, and the arrows ring the number. On its own it
             // sits on the card's top edge beside the real gem. When the cost gem has that spot, it goes in the
             // second slot: just right of the real gem at its middle, below the cost gem. (Tucked further along
             // the top edge it looked pushed out of the way.)
             bool costGemShown = entry.EnergyGem is { } costGem && IsAlive(costGem.Gem) && costGem.Gem.Visible;
-            UpdateMiniGem(ref entry.ReplayGem, card, config.ReplayGem && replay > 0 ? $"R{replay}" : null, energyOutline,
+            bool arrows = !string.Equals(config.ReplaySymbol, "R", StringComparison.OrdinalIgnoreCase);
+            string? replayText = config.ReplayGem && replay > 0 ? (arrows ? replay.ToString() : $"R{replay}") : null;
+            UpdateMiniGem(ref entry.ReplayGem, card, replayText, energyOutline,
                 new GemStyle("%EnergyIcon", EnergyGemSize, (int)(EnergyFontSize * 0.85f), config.ReplayGemScale,
                     config.ReplayGemShade, config.ReplayGemOpacity,
                     costGemShown ? config.ReplayGemOffsetWithCost : config.ReplayGemOffset,
@@ -131,6 +135,9 @@ internal static class CostBadges
 
             if (entry.ReplayGem is { } replayGem && IsAlive(replayGem.Gem) && replayGem.Gem.Visible)
             {
+                ReplayArrows.Update(ref replayGem.Arrows, replayGem.Gem, replayGem.Label, arrows, StsColors.cream,
+                    energyOutline);
+
                 NHandCardHolder? holder = HandHolder(card);
                 string kind = holder == null && config.ReplayEffectInHandOnly
                     ? ReplayEffects.None

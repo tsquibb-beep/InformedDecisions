@@ -29,10 +29,12 @@
     "originalCostOffset": [60, 6],
     "originalStarCostOffset": [50, 50],
 
-    // "R2" in a small gem on the card's top edge for a card that will be played 2 extra times.
+    // A small gem on the card's top edge for a card that will be played 2 extra times, showing 2.
     // It is smaller and darker than the cost gem so it stays in the background. When the normal-cost
     // gem is showing too, it moves to replayGemOffsetWithCost, just right of the real gem.
     "replayGem": true,
+    // "arrows" puts the number inside two arching arrows, the usual repeat symbol; "R" shows "R2".
+    "replaySymbol": "arrows",
     "replayGemScale": 0.58,
     "replayGemShade": 0.7,
     "replayGemOpacity": 1.0,
