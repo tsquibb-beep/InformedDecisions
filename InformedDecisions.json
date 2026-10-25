@@ -2,7 +2,7 @@
     "id": "InformedDecisions",
     "name": "InformedDecisions",
     "author": "Tomasapan",
-    "description": "Shows a card's normal cost in a small gem when an effect has changed it (Void Form, Corruption...), and how many times a card will be replayed (R2) in a second small gem, with card edges stacked behind it. Purely visual, so it is safe in co-op.",
+    "description": "Shows a card's normal cost in a small gem when an effect has changed it (Void Form, Corruption...), and how many times a card will be replayed (R2) in a second small gem. Purely visual, so it is safe in co-op.",
     "version": "0.3.0",
     "has_pck": false,
     "has_dll": true,

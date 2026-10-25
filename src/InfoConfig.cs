@@ -78,7 +78,7 @@ internal sealed class InfoConfig
 
     /// <summary>Stack card edges behind a card that will be played more than once.</summary>
     [JsonPropertyName("replayStack")]
-    public bool ReplayStack { get; set; } = true;
+    public bool ReplayStack { get; set; } = false;
 
     /// <summary>Most card edges drawn. They signal "replays"; the gem gives the number.</summary>
     [JsonPropertyName("replayStackMax")]

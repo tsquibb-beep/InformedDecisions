@@ -39,10 +39,10 @@
     "replayGemOffset": [66, 10],
     "replayGemOffsetWithCost": [74, 34],
 
-    // Card edges stacked behind a card that will be played more than once, up to replayStackMax.
+    // Card edges stacked behind a card that will be played more than once, up to replayStackMax. Off by default.
     // Where each edge sits relative to the one in front ([right, down], in card units; the card is
     // 300 x 422), and how much darker each one is (0 to 0.3).
-    "replayStack": true,
+    "replayStack": false,
     "replayStackMax": 2,
     "replayStackOffset": [7, -9],
     "replayStackShade": 0.2
