@@ -74,15 +74,15 @@ internal sealed class InfoConfig
 
     /// <summary>Size of the arrows within the gem (1 = as first drawn).</summary>
     [JsonPropertyName("replayArrowsScale")]
-    public float ReplayArrowsScale { get; set; } = 0.88f;
+    public float ReplayArrowsScale { get; set; } = 0.78f;
 
     /// <summary>How solid the arrows are (0 to 1); the number is not affected.</summary>
     [JsonPropertyName("replayArrowsOpacity")]
-    public float ReplayArrowsOpacity { get; set; } = 0.7f;
+    public float ReplayArrowsOpacity { get; set; } = 0.65f;
 
     /// <summary>Size of the replay number (1 = as first drawn).</summary>
     [JsonPropertyName("replayNumberScale")]
-    public float ReplayNumberScale { get; set; } = 0.88f;
+    public float ReplayNumberScale { get; set; } = 1f;
 
     /// <summary>Centre of the replay gem, relative to the energy gem.</summary>
     [JsonPropertyName("replayGemOffset")]
