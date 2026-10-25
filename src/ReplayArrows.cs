@@ -20,6 +20,8 @@ uniform float span = 62.0; // degrees either side of the top that each arc cover
 uniform float head_width = 0.36;
 uniform float head_length = 0.24;
 uniform float outline = 0.07;
+uniform float scale = 1.0;   // shrinks the whole symbol towards the middle
+uniform float opacity = 1.0;
 uniform vec4 fill : source_color = vec4(1.0, 0.96, 0.86, 1.0);
 uniform vec4 edge : source_color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -56,20 +58,23 @@ float sd_arrow(vec2 p) {
 }
 
 void fragment() {
-    vec2 p = (UV - 0.5) * vec2(2.0, -2.0);
+    vec2 p = (UV - 0.5) * vec2(2.0, -2.0) / max(scale, 0.05);
     // The second arrow is the first turned half a circle.
     float d = min(sd_arrow(p), sd_arrow(-p));
+    // Distances were measured in the scaled space; this keeps the outline and edges the same on screen.
+    d *= max(scale, 0.05);
     float aa = fwidth(d);
     float inner = 1.0 - smoothstep(-aa, aa, d);
     float outer = 1.0 - smoothstep(-aa, aa, d - outline);
-    COLOR = vec4(mix(edge.rgb, fill.rgb, inner), outer * edge.a);
+    COLOR = vec4(mix(edge.rgb, fill.rgb, inner), outer * edge.a * opacity);
 }
 ";
 
     private static Shader? _shader;
 
     /// <summary>Shows or hides the arrows on <paramref name="gem"/>, creating them the first time.</summary>
-    public static void Update(ref ColorRect? arrows, TextureRect gem, Label number, bool show, Color fill, Color outline)
+    public static void Update(ref ColorRect? arrows, TextureRect gem, Label number, bool show, Color fill, Color outline,
+        float scale, float opacity)
     {
         if (!show)
         {
@@ -93,6 +98,8 @@ void fragment() {
         var material = (ShaderMaterial)arrows.Material;
         material.SetShaderParameter("fill", fill);
         material.SetShaderParameter("edge", outline);
+        material.SetShaderParameter("scale", Mathf.Clamp(scale, 0.3f, 1.5f));
+        material.SetShaderParameter("opacity", Mathf.Clamp(opacity, 0f, 1f));
         arrows.Position = Vector2.Zero;
         arrows.Size = gem.Size;
         arrows.Visible = true;

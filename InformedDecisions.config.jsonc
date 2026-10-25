@@ -35,6 +35,11 @@
     "replayGem": true,
     // "arrows" puts the number inside two arching arrows, the usual repeat symbol; "R" shows "R2".
     "replaySymbol": "arrows",
+    // Size of the arrows and of the number inside the gem (1 = full size, 0.3 to 1.5), and how solid
+    // the arrows are (0 = invisible, 1 = solid; the number stays solid).
+    "replayArrowsScale": 0.88,
+    "replayArrowsOpacity": 0.7,
+    "replayNumberScale": 0.88,
     "replayGemScale": 0.58,
     "replayGemShade": 0.7,
     "replayGemOpacity": 1.0,

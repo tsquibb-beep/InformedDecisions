@@ -124,7 +124,9 @@ internal static class CostBadges
             bool arrows = !string.Equals(config.ReplaySymbol, "R", StringComparison.OrdinalIgnoreCase);
             string? replayText = config.ReplayGem && replay > 0 ? (arrows ? replay.ToString() : $"R{replay}") : null;
             UpdateMiniGem(ref entry.ReplayGem, card, replayText, energyOutline,
-                new GemStyle("%EnergyIcon", EnergyGemSize, (int)(EnergyFontSize * 0.85f), config.ReplayGemScale,
+                new GemStyle("%EnergyIcon", EnergyGemSize,
+                    (int)MathF.Round(EnergyFontSize * 0.85f * Math.Clamp(config.ReplayNumberScale, 0.3f, 1.5f)),
+                    config.ReplayGemScale,
                     config.ReplayGemShade, config.ReplayGemOpacity,
                     costGemShown ? config.ReplayGemOffsetWithCost : config.ReplayGemOffset,
                     costGemShown ? new Vector2(74, 34) : new Vector2(66, 10)));
@@ -136,7 +138,7 @@ internal static class CostBadges
             if (entry.ReplayGem is { } replayGem && IsAlive(replayGem.Gem) && replayGem.Gem.Visible)
             {
                 ReplayArrows.Update(ref replayGem.Arrows, replayGem.Gem, replayGem.Label, arrows, StsColors.cream,
-                    energyOutline);
+                    energyOutline, config.ReplayArrowsScale, config.ReplayArrowsOpacity);
 
                 NHandCardHolder? holder = HandHolder(card);
                 string kind = holder == null && config.ReplayEffectInHandOnly
