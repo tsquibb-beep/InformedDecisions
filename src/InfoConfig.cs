@@ -72,9 +72,9 @@ internal sealed class InfoConfig
     [JsonPropertyName("replayGemOffset")]
     public float[] ReplayGemOffset { get; set; } = { 66, 10 };
 
-    /// <summary>Centre of the replay gem when the normal-cost gem is showing too; it tucks behind that gem.</summary>
+    /// <summary>Centre of the replay gem when the normal-cost gem is showing too: right of the real gem, below the cost gem.</summary>
     [JsonPropertyName("replayGemOffsetWithCost")]
-    public float[] ReplayGemOffsetWithCost { get; set; } = { 84, 8 };
+    public float[] ReplayGemOffsetWithCost { get; set; } = { 74, 34 };
 
     /// <summary>Stack card edges behind a card that will be played more than once.</summary>
     [JsonPropertyName("replayStack")]

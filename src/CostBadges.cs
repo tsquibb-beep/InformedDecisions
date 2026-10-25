@@ -111,16 +111,16 @@ internal static class CostBadges
                 new GemStyle("%StarIcon", StarGemSize, StarFontSize, config.OriginalStarCostScale,
                     config.OriginalCostGemShade, 1f, config.OriginalStarCostOffset, new Vector2(50, 50)));
 
-            // "R2" is two characters, so its text is a notch smaller than a cost in the same gem. It sits on
-            // the card's top edge beside the real gem. When the cost gem is there too, it tucks in behind that
-            // one instead, so the three read as one chain. (Below the gem it was covered by the gem's corner
-            // and lost on the title banner; a separate slot further right looked detached.)
+            // "R2" is two characters, so its text is a notch smaller than a cost in the same gem. On its own it
+            // sits on the card's top edge beside the real gem. When the cost gem has that spot, it goes in the
+            // second slot: just right of the real gem at its middle, below the cost gem. (Tucked further along
+            // the top edge it looked pushed out of the way.)
             bool costGemShown = entry.EnergyGem is { } costGem && IsAlive(costGem.Gem) && costGem.Gem.Visible;
             UpdateMiniGem(ref entry.ReplayGem, card, config.ReplayGem && replay > 0 ? $"R{replay}" : null, energyOutline,
                 new GemStyle("%EnergyIcon", EnergyGemSize, (int)(EnergyFontSize * 0.85f), config.ReplayGemScale,
                     config.ReplayGemShade, config.ReplayGemOpacity,
                     costGemShown ? config.ReplayGemOffsetWithCost : config.ReplayGemOffset,
-                    costGemShown ? new Vector2(84, 8) : new Vector2(66, 10)));
+                    costGemShown ? new Vector2(74, 34) : new Vector2(66, 10)));
             if (costGemShown)
             {
                 DrawBehind(entry.ReplayGem, entry.EnergyGem!);
