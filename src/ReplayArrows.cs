@@ -7,6 +7,10 @@ namespace InformedDecisions;
 /// pointing clockwise and one under the bottom (the usual "repeat" icon), in the cost text's cream
 /// with its outline. Drawn by a shader on a ColorRect the size of the gem, a child of it placed before
 /// the number so the number draws on top. A signed-distance shape, so it stays crisp at any card size.
+///
+/// In the hand the arrows can spin clockwise: one slow turn, then one quick turn, over and over. The
+/// quick turn speeds up from and slows back to the slow speed, so there is no jolt between the two.
+/// Driven by the shader's TIME, so every spinning gem stays in step.
 /// </summary>
 internal static class ReplayArrows
 {
@@ -22,6 +26,9 @@ uniform float head_length = 0.24;
 uniform float outline = 0.07;
 uniform float scale = 1.0;   // shrinks the whole symbol towards the middle
 uniform float opacity = 1.0;
+uniform float spin = 0.0;       // 1 to spin
+uniform float slow_turn = 3.0;  // seconds for the slow turn
+uniform float fast_turn = 0.6;  // seconds for the quick turn
 uniform vec4 fill : source_color = vec4(1.0, 0.96, 0.86, 1.0);
 uniform vec4 edge : source_color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -57,8 +64,28 @@ float sd_arrow(vec2 p) {
     return min(arc, head);
 }
 
+// Turns completed so far in the current slow + quick cycle, 0 to 2.
+float turns(float t) {
+    float slow = max(slow_turn, 0.05);
+    float fast = max(fast_turn, 0.05);
+    t = mod(t, slow + fast);
+    if (t < slow) {
+        return t / slow;
+    }
+    // Hermite curve from 0 to 1 that starts and ends at the slow speed.
+    float s = (t - slow) / fast;
+    float m = fast / slow;
+    float s2 = s * s, s3 = s2 * s;
+    return 1.0 + (s3 - 2.0 * s2 + s) * m + (-2.0 * s3 + 3.0 * s2) + (s3 - s2) * m;
+}
+
 void fragment() {
     vec2 p = (UV - 0.5) * vec2(2.0, -2.0) / max(scale, 0.05);
+    if (spin > 0.5) {
+        // Sampling with the point turned anticlockwise draws the symbol turned clockwise.
+        float a = turns(TIME) * 6.2831853;
+        p = mat2(vec2(cos(a), sin(a)), vec2(-sin(a), cos(a))) * p;
+    }
     // The second arrow is the first turned half a circle.
     float d = min(sd_arrow(p), sd_arrow(-p));
     // Distances were measured in the scaled space; this keeps the outline and edges the same on screen.
@@ -74,7 +101,7 @@ void fragment() {
 
     /// <summary>Shows or hides the arrows on <paramref name="gem"/>, creating them the first time.</summary>
     public static void Update(ref ColorRect? arrows, TextureRect gem, Label number, bool show, Color fill, Color outline,
-        float scale, float opacity)
+        InfoConfig config, bool spin)
     {
         if (!show)
         {
@@ -98,8 +125,11 @@ void fragment() {
         var material = (ShaderMaterial)arrows.Material;
         material.SetShaderParameter("fill", fill);
         material.SetShaderParameter("edge", outline);
-        material.SetShaderParameter("scale", Mathf.Clamp(scale, 0.3f, 1.5f));
-        material.SetShaderParameter("opacity", Mathf.Clamp(opacity, 0f, 1f));
+        material.SetShaderParameter("scale", Mathf.Clamp(config.ReplayArrowsScale, 0.3f, 1.5f));
+        material.SetShaderParameter("opacity", Mathf.Clamp(config.ReplayArrowsOpacity, 0f, 1f));
+        material.SetShaderParameter("spin", spin ? 1f : 0f);
+        material.SetShaderParameter("slow_turn", config.ReplayArrowsSlowTurn);
+        material.SetShaderParameter("fast_turn", config.ReplayArrowsFastTurn);
         arrows.Position = Vector2.Zero;
         arrows.Size = gem.Size;
         arrows.Visible = true;

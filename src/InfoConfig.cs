@@ -80,6 +80,18 @@ internal sealed class InfoConfig
     [JsonPropertyName("replayArrowsOpacity")]
     public float ReplayArrowsOpacity { get; set; } = 0.65f;
 
+    /// <summary>Spin the arrows while the card is in your hand: one slow turn, then one quick turn.</summary>
+    [JsonPropertyName("replayArrowsSpin")]
+    public bool ReplayArrowsSpin { get; set; } = true;
+
+    /// <summary>Seconds for the slow turn.</summary>
+    [JsonPropertyName("replayArrowsSlowTurn")]
+    public float ReplayArrowsSlowTurn { get; set; } = 3f;
+
+    /// <summary>Seconds for the quick turn.</summary>
+    [JsonPropertyName("replayArrowsFastTurn")]
+    public float ReplayArrowsFastTurn { get; set; } = 0.6f;
+
     /// <summary>Size of the replay number (1 = as first drawn).</summary>
     [JsonPropertyName("replayNumberScale")]
     public float ReplayNumberScale { get; set; } = 1f;
@@ -94,7 +106,7 @@ internal sealed class InfoConfig
 
     /// <summary>Motion on the replay gem: "ripple", "glow", "compare" (alternates the two along the hand) or "none".</summary>
     [JsonPropertyName("replayEffect")]
-    public string ReplayEffect { get; set; } = ReplayEffects.Ripple;
+    public string ReplayEffect { get; set; } = ReplayEffects.None;
 
     /// <summary>Only animate replay gems in your hand; the deck view and rewards stay still.</summary>
     [JsonPropertyName("replayEffectInHandOnly")]

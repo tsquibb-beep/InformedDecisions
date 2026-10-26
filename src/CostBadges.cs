@@ -137,10 +137,10 @@ internal static class CostBadges
 
             if (entry.ReplayGem is { } replayGem && IsAlive(replayGem.Gem) && replayGem.Gem.Visible)
             {
-                ReplayArrows.Update(ref replayGem.Arrows, replayGem.Gem, replayGem.Label, arrows, StsColors.cream,
-                    energyOutline, config.ReplayArrowsScale, config.ReplayArrowsOpacity);
-
                 NHandCardHolder? holder = HandHolder(card);
+                ReplayArrows.Update(ref replayGem.Arrows, replayGem.Gem, replayGem.Label, arrows, StsColors.cream,
+                    energyOutline, config, spin: holder != null && config.ReplayArrowsSpin);
+
                 string kind = holder == null && config.ReplayEffectInHandOnly
                     ? ReplayEffects.None
                     : ReplayEffects.Resolve(config.ReplayEffect, holder?.GetIndex() ?? 0);
