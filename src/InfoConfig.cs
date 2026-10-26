@@ -86,11 +86,11 @@ internal sealed class InfoConfig
 
     /// <summary>Seconds for the slow turn.</summary>
     [JsonPropertyName("replayArrowsSlowTurn")]
-    public float ReplayArrowsSlowTurn { get; set; } = 3f;
+    public float ReplayArrowsSlowTurn { get; set; } = 8f;
 
     /// <summary>Seconds for the quick turn.</summary>
     [JsonPropertyName("replayArrowsFastTurn")]
-    public float ReplayArrowsFastTurn { get; set; } = 0.6f;
+    public float ReplayArrowsFastTurn { get; set; } = 1.6f;
 
     /// <summary>Size of the replay number (1 = as first drawn).</summary>
     [JsonPropertyName("replayNumberScale")]

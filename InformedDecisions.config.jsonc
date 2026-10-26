@@ -43,8 +43,8 @@
     // Spin the arrows while the card is in your hand: one slow turn, then one quick turn, repeating.
     // The two times are the seconds each turn takes.
     "replayArrowsSpin": true,
-    "replayArrowsSlowTurn": 3.0,
-    "replayArrowsFastTurn": 0.6,
+    "replayArrowsSlowTurn": 8,
+    "replayArrowsFastTurn": 1.6,
     "replayGemScale": 0.58,
     "replayGemShade": 0.7,
     "replayGemOpacity": 1.0,
