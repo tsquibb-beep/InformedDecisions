@@ -3,10 +3,10 @@
     "name": "InformedDecisions",
     "author": "Tomasapan",
     "description": "Shows a card's normal cost in a small gem when an effect has changed it (Void Form, Corruption...), and how many extra times a card will be played (Replay, Echo Form, Burst...) in a second small gem ringed by turning repeat arrows. Purely visual, so it is safe in co-op.",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "has_pck": false,
     "has_dll": true,
     "dependencies": [],
     "affects_gameplay": false,
-    "min_game_version": "0.107.1"
+    "min_game_version": "0.111.1"
 }
